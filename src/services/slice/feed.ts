@@ -1,4 +1,3 @@
-
 import { createSlice } from '@reduxjs/toolkit';
 import { TOrder } from '@utils-types';
 import { createAsyncThunk } from '@reduxjs/toolkit';
@@ -27,7 +26,6 @@ const initialState: IFeedState = {
 };
 
 export const fetchFeeds = createAsyncThunk('feed/fetch', getFeedsApi);
-
 export const fetchUserOrders = createAsyncThunk('feed/fetchUser', getOrdersApi);
 
 const feedSlice = createSlice({
