@@ -36,13 +36,10 @@ const App = () => {
     navigate(-1);
   };
 
-
   useEffect(() => {
     // dispatch(checkUserAuth());
     dispatch(fetchIngredients());
   }, [dispatch]);
-
-
 
   return (
     <div className={styles.app}>
