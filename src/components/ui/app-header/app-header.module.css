@@ -34,4 +34,9 @@
   display: flex;
   align-items: center;
   margin: 0 auto;
+  transition: 0.2s;
+}
+.logo:hover {
+  filter: drop-shadow(1px 1px 2px rgb(247, 0, 255));
+  scale: 1.04;
 }
