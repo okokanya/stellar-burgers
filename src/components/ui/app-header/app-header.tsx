@@ -11,17 +11,16 @@ import { Link, useLocation } from 'react-router-dom';
 
 export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => {
   const location = useLocation();
-
   return (
     <header className={styles.header}>
       <nav className={`${styles.menu} p-4`}>
         <div className={styles.menu_part_left}>
           <>
-            <BurgerIcon type={'primary'} />
             <Link
               to='/'
               className={`${styles.link}  ${location.pathname === '/' ? '' : styles.link_active}`}
             >
+              <BurgerIcon type={'primary'} />
               <p className='text text_type_main-default ml-2 mr-10'>
                 Конструктор
               </p>

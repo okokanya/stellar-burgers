@@ -1,5 +1,5 @@
 import { useSelector } from '../../services/store';
-import { getIsIngredientsLoading } from '../../services/slice/ingredients';
+import { getIsLoading } from '../../services/slice/ingredients';
 import styles from './constructor-page.module.css';
 import { BurgerIngredients } from '../../components';
 import { BurgerConstructor } from '../../components';
@@ -7,7 +7,8 @@ import { Preloader } from '../../components/ui';
 import { FC } from 'react';
 
 export const ConstructorPage: FC = () => {
-  const isIngredientsLoading = useSelector(getIsIngredientsLoading);
+  const isIngredientsLoading = useSelector(getIsLoading);
+
   return (
     <>
       {isIngredientsLoading ? (

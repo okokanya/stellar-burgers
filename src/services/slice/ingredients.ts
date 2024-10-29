@@ -1,47 +1,50 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { TIngredient } from '@utils-types';
-import { createAsyncThunk } from '@reduxjs/toolkit';
 import { getIngredientsApi } from '@api';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { TIngredient } from '@utils-types';
 
-interface IIngredientsState {
+export const INGREDIENT_SLICES_NAME = 'ingredients';
+
+interface IIngredients {
   ingredients: TIngredient[];
-  loading: boolean;
+  isLoading: boolean;
+  error: string | null;
 }
 
-const initialState: IIngredientsState = {
+const initialState: IIngredients = {
   ingredients: [],
-  loading: false
+  isLoading: true,
+  error: null
 };
 
-export const fetchIngredients = createAsyncThunk(
-  'ingredients/fetch',
-  getIngredientsApi
+export const fetchIngredient = createAsyncThunk(
+  `${INGREDIENT_SLICES_NAME}/fetchIngredient`,
+  async () => getIngredientsApi()
 );
 
-const ingredientsSlice = createSlice({
-  name: 'ingredients',
+const ingredienstSlice = createSlice({
+  name: `${INGREDIENT_SLICES_NAME}`,
   initialState,
   reducers: {},
+  selectors: {
+    getIngredienst: (state) => state.ingredients,
+    getIsLoading: (state) => state.isLoading
+  },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchIngredients.pending, (state) => {
-        state.loading = true;
+      .addCase(fetchIngredient.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
       })
-      .addCase(fetchIngredients.fulfilled, (state, action) => {
-        state.loading = false;
+      .addCase(fetchIngredient.fulfilled, (state, action) => {
+        state.isLoading = false;
         state.ingredients = action.payload;
       })
-      .addCase(fetchIngredients.rejected, (state, action) => {
-        state.loading = false;
+      .addCase(fetchIngredient.rejected, (state) => {
+        state.isLoading = false;
+        state.error = 'Не удалось получить ингредиенты';
       });
-  },
-  selectors: {
-    getIngredients: (state) => state.ingredients,
-    getIsIngredientsLoading: (state) => state.loading
   }
 });
 
-export const { getIngredients, getIsIngredientsLoading } =
-  ingredientsSlice.selectors;
-
-export default ingredientsSlice.reducer;
+export const ingredienstsReducer = ingredienstSlice.reducer;
+export const { getIngredienst, getIsLoading } = ingredienstSlice.selectors;

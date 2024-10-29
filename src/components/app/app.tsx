@@ -1,87 +1,79 @@
-import { useEffect } from 'react';
-import '../../index.css';
-import styles from './app.module.css';
-import ProtectedRoute from '../ProtectedRoute';
-import { fetchIngredients } from '../../services/slice/ingredients';
-
-import {
-  Routes,
-  Route,
-  BrowserRouter,
-  useLocation,
-  useNavigate
-} from 'react-router-dom';
 import {
   ConstructorPage,
   Feed,
-  NotFound404,
-  Login,
-  Profile,
-  Register,
   ForgotPassword,
-  ResetPassword,
-  ProfileOrders
+  Login,
+  NotFound404,
+  Profile,
+  ProfileOrders,
+  Register,
+  ResetPassword
 } from '@pages';
+import '../../index.css';
+import styles from './app.module.css';
+import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import ProtectedRoute from '../ProtectedRoute';
 import { useDispatch } from '../../services/store';
-import { AppHeader, Modal, OrderInfo, IngredientDetails } from '@components';
+import { useEffect } from 'react';
+import { fetchIngredient } from '../../services/slice/ingredients';
+import { checkUserAuth } from '../../services/slice/user';
 
 const App = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const location = useLocation();
   const backgroundLocation = location.state?.background;
+  useEffect(() => {
+    dispatch(fetchIngredient());
+    dispatch(checkUserAuth());
+  }, []);
 
-  const navigate = useNavigate();
   const goBack = () => {
-    console.log('go back');
+    console.log('goBack');
     navigate(-1);
   };
-
-  useEffect(() => {
-    // dispatch(checkUserAuth());
-    dispatch(fetchIngredients());
-  }, [dispatch]);
 
   return (
     <div className={styles.app}>
       <AppHeader />
-      {/* <BrowserRouter> */}
-      <Routes>
+      <Routes location={backgroundLocation || location}>
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
         <Route
-          path='/login'
+          path='login'
           element={
-            <ProtectedRoute>
+            <ProtectedRoute onlyUnAuth>
               <Login />
             </ProtectedRoute>
           }
         />
         <Route
-          path='/register'
+          path='register'
           element={
-            <ProtectedRoute>
+            <ProtectedRoute onlyUnAuth>
               <Register />
             </ProtectedRoute>
           }
         />
         <Route
-          path='/forgot-password'
+          path='forgot-password'
           element={
-            <ProtectedRoute>
+            <ProtectedRoute onlyUnAuth>
               <ForgotPassword />
             </ProtectedRoute>
           }
         />
         <Route
-          path='/reset-password'
+          path='reset-password'
           element={
-            <ProtectedRoute>
+            <ProtectedRoute onlyUnAuth>
               <ResetPassword />
             </ProtectedRoute>
           }
         />
         <Route
-          path='/profile'
+          path='profile/'
           element={
             <ProtectedRoute>
               <Profile />
@@ -89,47 +81,71 @@ const App = () => {
           }
         />
         <Route
-          path='/profile/orders'
+          path='profile/orders'
           element={
             <ProtectedRoute>
               <ProfileOrders />
             </ProtectedRoute>
           }
         />
-        <Route
-          path='*'
-          element={
-            <ProtectedRoute>
-              <NotFound404 />
-            </ProtectedRoute>
-          }
-        />
+        <Route path='*' element={<NotFound404 />} />
         <Route
           path='/feed/:number'
           element={
-            <Modal title={`Заказ`} onClose={goBack}>
+            <div className={styles.page}>
               <OrderInfo />
-            </Modal>
+            </div>
           }
         />
         <Route
           path='/ingredients/:id'
           element={
-            <Modal title='Детали ингредиента' onClose={goBack}>
+            <div className={styles.page}>
               <IngredientDetails />
-            </Modal>
+            </div>
           }
         />
         <Route
           path='/profile/orders/:number'
           element={
-            <Modal title='Заказ' onClose={goBack}>
-              <OrderInfo />
-            </Modal>
+            <ProtectedRoute>
+              <div className={styles.page}>
+                <OrderInfo />
+              </div>
+            </ProtectedRoute>
           }
         />
       </Routes>
-      {/* </BrowserRouter> */}
+      {backgroundLocation && (
+        <Routes>
+          <Route
+            path='/feed/:number'
+            element={
+              <Modal title='Детали заказа' onClose={goBack}>
+                <OrderInfo />
+              </Modal>
+            }
+          />
+          <Route
+            path='/ingredients/:id'
+            element={
+              <Modal title='Детали ингридиента' onClose={goBack}>
+                <IngredientDetails />
+              </Modal>
+            }
+          />
+          <Route
+            path='/profile/orders/:number'
+            element={
+              <ProtectedRoute>
+                <Modal title='Детали заказа' onClose={goBack}>
+                  <OrderInfo />
+                </Modal>
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      )}
     </div>
   );
 };

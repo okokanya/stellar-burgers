@@ -1,15 +1,16 @@
 import { FC } from 'react';
 import { Preloader } from '../ui/preloader';
 import { IngredientDetailsUI } from '../ui/ingredient-details';
-import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { getIngredients } from '../../services/slice/ingredients';
+import { useLocation, useParams } from 'react-router-dom';
+import { useSelector } from '../../services/store';
+import { getIngredienst } from '../../services/slice/ingredients';
 
 export const IngredientDetails: FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const ingredients = useSelector(getIngredients);
-  const ingredientData = ingredients.find(
-    (ingredient) => ingredient._id === id
+  const location = useLocation();
+  const { id } = useParams();
+  /** TODO: взять переменную из стора */
+  const ingredientData = useSelector(getIngredienst).find(
+    (item) => item._id === id
   );
 
   if (!ingredientData) {
