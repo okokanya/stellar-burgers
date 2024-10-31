@@ -33,6 +33,8 @@ export const constructorSlice = createSlice({
       })
     },
     deleteFromConstructor: (state, action: PayloadAction<string>) => {
+      console.log('333');
+
       const index = state.ingredients.findIndex(
         (ingredient) => ingredient._id === action.payload
       );
